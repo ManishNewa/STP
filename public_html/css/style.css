@@ -1,0 +1,232 @@
+:root{
+  font-size: 16px;
+
+}
+ body{
+  /*background: -webkit-linear-gradient(left, #FF0099, #493240);*/
+}
+.main-container{
+    /*display: flex;*/
+    display: block;
+    align-items: center;
+    margin-top: 10%;
+    position: absolute;
+    width: 100%;
+    /*background-color: transparent;*/
+    height: auto;
+}
+
+.left{
+  margin-left: 3%;
+  padding-left: 1%;
+  float: left;
+  width: 30%;
+  /*background: linear-gradient(rgba(34,28,22,0.5),rgba(0,0,0,0.5)),url(../img/background/left.jpg);*/
+  background: -webkit-linear-gradient(left, #0F2027, #2C5364);
+  border-radius: 1%;
+  text-decoration-color: white;
+  position: sticky;
+  top: 0;
+}
+
+.left .title {
+  padding-top: 5%;
+}
+
+.left .title p{
+  font-size: 15px;
+}
+
+.left .title .left-contents{
+
+}
+
+
+.right {
+  float: left;
+  margin-left: 1%;
+  width: 64%;  
+  background: -webkit-linear-gradient(left, #c31432, #240b36);
+  /*background: linear-gradient(rgba(34,28,22,0.5),rgba(0,0,0,0.5)),url(../img/background/left.jpg);/*background: url(../img/background/left.png);*/
+  border-radius: 1%;
+  margin-bottom: 5%;
+}
+
+.right .result_header{
+  text-decoration: underline;
+}
+
+.right .title{
+  padding-top: 1%;
+  padding-bottom: 1%;
+}
+
+.right .row{
+  padding: 1%;
+  overflow-y: scroll;
+  margin-top: 2%;
+  max-height: 1000px;
+}
+
+.right .row .container{
+  margin-top:6%;
+}
+
+.right .tutor-contents{
+  border-radius: 10px;
+  background-color: white;
+  background-position: left top;
+  background-repeat: repeat;
+  width: auto;
+  height: auto;
+  max-height: 300px;
+  position: relative;
+  color: black;
+  margin-bottom: 25%;
+}
+
+.right .tutor-body{
+  margin-bottom: 15%;
+}
+
+.right .tutor-image{
+    display: block; 
+    position: relative;
+    left: 50%;
+    transform: translate(-50%,-30%);
+    max-width: 100px;
+    max-height: 100px;
+    border-bottom: 1px solid black;
+    margin-top: 10%;
+    /*border-radius: 50%;*/
+}
+
+.tutor-body .tutor-name{
+  margin-top:-10%;
+}
+
+
+
+/*Buttons css on the tutor card*/
+.right .view,
+.right .start{
+  display: block;
+  background-color: blue;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  width: 100%;
+  padding: 14px 0;
+  font-size: 17px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color,color ease 333ms;
+  position: relative;
+  /*top: -5px;*/
+  line-height: 1;
+  z-index: 1;
+}
+
+
+/*.right .start{
+  display: block;
+  background-color: blue;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  width: 100%;
+  padding: 14px 0;
+  font-size: 17px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color,color ease 333ms;
+  font-weight: 300;
+  position: relative;
+  /*top: -5px;*/
+  line-height: 1;
+  z-index: 1;
+}*/
+
+#hide{
+  display: none;
+}
+
+#show:active{
+  display: true;
+}
+
+#data{
+  display: none;
+}
+
+
+
+.paginate{
+  position: relative;
+  margin-top:  ;
+  margin-left: 40%;
+}
+
+.imgBox{
+    background-image:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url(../img/background/4.jpg);
+    background-repeat:no-repeat;
+    background-attachment:scroll;
+    background-position:center center;
+    background-attachment: fixed;
+    background-size:cover;
+    height: 100vh;
+}
+
+.card-login {
+  max-width: 25rem;
+}
+
+.card-register {
+  max-width: 30rem;
+/*  display: block;
+  float: left;*/
+}
+/*.underlined_links{
+  color: black;
+}
+*/
+a .underlined-links:hover{
+  color: black;
+  
+}
+
+a .border_sign{
+  padding:5px;
+  border:1px solid white;
+}
+
+
+
+
+
+@media (max-width:890px){
+  
+  .tutor-contents{
+    margin-top: 5%;
+  }
+
+  .tutor-name{
+    font-size: 1rem;
+  }
+
+  .tutor-text{
+    font-size: .8rem;
+  }
+}
+/*@media (max-width:800px){
+  
+  .tutor-contents{
+    margin-top: 5%;
+  }
+
+  .tutor-name{
+    font-size: 1rem;
+  }
+
+  .tutor-text{
+    font-size: .8rem;
+  }
+}

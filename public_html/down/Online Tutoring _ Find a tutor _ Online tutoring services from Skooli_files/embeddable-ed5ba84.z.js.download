@@ -1,0 +1,147 @@
+/* globals lp */
+;(function() {
+
+  // Dispatch table to handle incoming postMessage, keyed by message `type`.
+  var messageHandlers = {
+
+    addSubmitHeaders: function(message) {
+      // Allow the universal script to set headers that will be included in the form
+      // submit AJAX request.
+      if (window.lp && window.lp.form && window.lp.form.main) {
+        window.lp.form.main.addSubmitHeaders(message.headers);
+      }
+    }
+
+  };
+
+
+  // Post a message with a `type` and consistent `namespace` to the parent window,
+  // i.e. the host page.
+  function _postMessageToHostPage(type, metadata) {
+    var message = lp.jQuery.extend({
+      type: type,
+      namespace: 'ub-emb'
+    }, metadata);
+
+    // We need to use a wildcard origin because at the moment we don't know the host
+    // page's domain.
+    window.parent.postMessage(JSON.stringify(message), '*');
+  }
+
+
+  // Post a message to the host page with this page's dimensions, so it can adjust the
+  // size of the overlay.
+  function _reportPageSize() {
+    if (window.ub.page.usedAs === 'main') {
+      _postMessageToHostPage('reportPageSize', {
+        desktop: window.ub.page.dimensions.desktop,
+        mobile: window.ub.page.dimensions.mobile
+      });
+    }
+  }
+
+
+  // Post a message to the host page whenever a link is clicked on the page.
+  function _addClickHandlers() {
+    lp.jQuery('a.lp-pom-button')
+      .not('.lp-pom-form a.lp-pom-button')
+      .add('.lp-pom-image a')
+      .add('.lp-pom-text a')
+      .click(function(e) {
+        var $element = lp.jQuery(e.currentTarget);
+        var href = $element.attr('href');
+        var target = $element.attr('target');
+        var shouldRedirect = false;
+
+        // Allow the universal script on the host page to handle the redirect once the stats request
+        // has completed.
+        if (target === '_top' || target === '_parent') {
+          e.preventDefault();
+          shouldRedirect = true;
+        }
+
+        if (href && href !== '#') {
+          _postMessageToHostPage('linkClick', {
+            isConversion: $element.attr('data-goal') === 'true',
+            linkUrl: href,
+            shouldRedirect: shouldRedirect
+          });
+        }
+      });
+  }
+
+  // Post a message to the host page to request closing the form confirmation dialog, after a delay
+  function _setAutoDismissTimeout() {
+    var delaySeconds = (window._embDisplaySettings || {}).autoDismissDelay;
+
+    if (typeof delaySeconds === 'number' && delaySeconds >= 0) {
+      setTimeout(close, delaySeconds * 1000);
+    }
+  }
+
+  // Public: Post a message to the host page to display the form confirmation with the given URL and
+  // sizes.
+  function showFormConfirmation(url, sizes) {
+    _postMessageToHostPage('openOverlay', {
+      url: url,
+      size: {
+        desktop: sizes.desktop,
+        mobile: sizes.mobile,
+
+        // The `width` and `height` keys are deprecated but are still expected by the
+        // universal script.
+        // TODO: Remove these once the universal script doesn't rely on them any more.
+        width: sizes.desktop.width,
+        height: sizes.desktop.height
+      }
+    });
+  }
+
+
+  // Public: Post a message to the host page to inform it that a form submission has
+  // occurred.
+  function reportFormSubmit(isConversion, formAction) {
+    _postMessageToHostPage('formSubmit', {
+      isConversion: isConversion,
+      formAction: formAction
+    });
+  }
+
+
+  // Public: Post a message to the host page requesting it to close the current overlay.
+  function close() {
+    _postMessageToHostPage('closeOverlay');
+  }
+
+
+  function main() {
+    if ( ! window.lp.ubBrowser.isPostMessageSupported()) {
+     return;
+    }
+
+    // Subscribe to messages posted from the host page to this embeddable.
+    window.addEventListener('message', function(event) {
+      var message = event.data;
+      var handler = messageHandlers[message.type];
+      if (typeof handler === 'function') {
+        handler(message);
+      }
+    });
+
+    lp.jQuery(document).ready(function() {
+      _reportPageSize();
+      _addClickHandlers();
+      _setAutoDismissTimeout();
+    });
+  }
+
+  main();
+
+  // Public API
+  window.lp = window.lp || {};
+  window.lp.embeddable = {
+    showFormConfirmation: showFormConfirmation,
+    reportFormSubmit: reportFormSubmit,
+    close: close
+  };
+}());
